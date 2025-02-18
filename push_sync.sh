@@ -74,3 +74,21 @@ else
   echo "A branch '$CURRENT_BRANCH' não está atualizada no GitHub. Empurrando..."
   git push $REMOTE_GITHUB
 fi
+
+
+
+
+# Obtém as URLs dos remotes
+BITBUCKET_URL=$(git remote get-url bitbucket | sed 's/\.git$//')
+GITLAB_URL=$(git remote get-url github | sed 's/\.git$//')
+
+
+# Exibe os links
+echo -e "\033[97mAbra os Pull Requests nos links abaixo:\033[0m"
+echo -e "\033[33mGitHub:\033[97m $BITBUCKET_URL/compare/main...$CURRENT_BRANCH\033[0m"
+echo -e "\033[33mGitLab:\033[97m $BITBUCKET_URL/-/merge_requests/new?merge_request[source_branch]=$CURRENT_BRANCH&merge_request[target_branch]=main\033[0m"
+
+# Exibe os links
+echo -e "\033[97mAbra os Pull Requests nos links abaixo:\033[0m"
+echo -e "\033[33mGitHub:\033[97m $GITHUB_URL/compare/main...$CURRENT_BRANCH\033[0m"
+echo -e "\033[33mGitLab:\033[97m $GITLAB_URL/-/merge_requests/new?merge_request[source_branch]=$CURRENT_BRANCH&merge_request[target_branch]=main\033[0m"
