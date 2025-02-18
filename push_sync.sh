@@ -45,6 +45,7 @@ BRANCH_EXISTS=$(git ls-remote --heads $REMOTE_BITBUCKET $CURRENT_BRANCH)
 
 if [[ -z "$BRANCH_EXISTS" ]]; then
   echo " ❌ A branch '$CURRENT_BRANCH' NÃO existe no '$REMOTE_BITBUCKET'."
+  echo "📨 Enviando"
   git push $REMOTE_BITBUCKET
 else
   echo " ✅ A branch '$CURRENT_BRANCH' já existe no '$REMOTE_BITBUCKET'."
@@ -59,6 +60,7 @@ if [ "$LOCAL_COMMIT" = "$REMOTE_COMMIT" ]; then
   echo " ✅ A branch '$CURRENT_BRANCH' já está atualizada no Bitbucket."
 else
   echo " ❌ A branch '$CURRENT_BRANCH' não está atualizada no Bitbucket. Empurrando..."
+  echo "📨 Enviando"
   git push $REMOTE_BITBUCKET
 fi
 
@@ -70,6 +72,7 @@ BRANCH_EXISTS=$(git ls-remote --heads $REMOTE_GITHUB $CURRENT_BRANCH)
 
 if [[ -z "$BRANCH_EXISTS" ]]; then
   echo " ❌ A branch '$CURRENT_BRANCH' NÃO existe no '$REMOTE_GITHUB'."
+  echo "📨 Enviando"
   git push $REMOTE_GITHUB
 else
   echo " ✅ A branch '$CURRENT_BRANCH' já existe no '$REMOTE_GITHUB'."
@@ -84,6 +87,7 @@ if [ "$LOCAL_COMMIT" = "$REMOTE_COMMIT" ]; then
   echo " ✅ A branch '$CURRENT_BRANCH' já está atualizada no GitHub."
 else
   echo " ❌ A branch '$CURRENT_BRANCH' não está atualizada no GitHub. Empurrando..."
+  echo "📨 Enviando"
   git push $REMOTE_GITHUB
 fi
 
