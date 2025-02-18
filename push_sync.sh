@@ -1,13 +1,14 @@
 #!/bin/bash
 
-echo "Sincronizando Branchs"
+echo ""
+echo "🐯🐯🐯 Sincronizando Branchs 🐯🐯🐯"
 
 # Pega os nomes dos remotes configurados
 remotes=$(git remote)
 
 # Verifique se temos pelo menos dois remotes configurados (Bitbucket e GitHub)
 if [ $(echo "$remotes" | wc -l) -lt 2 ]; then
-    echo "É necessário ter pelo menos dois remotes configurados (Bitbucket e GitHub)."
+    echo "❌ É necessário ter pelo menos dois remotes configurados (Bitbucket e GitHub)."
     exit 1
 fi
 
@@ -17,7 +18,7 @@ REMOTE_GITHUB=$(echo "$remotes" | grep -i github)
 
 # Se não encontrou os remotes, avise ao usuário
 if [ -z "$REMOTE_BITBUCKET" ] || [ -z "$REMOTE_GITHUB" ]; then
-    echo "Não foi possível identificar os remotes do Bitbucket e GitHub. Certifique-se de que estão configurados corretamente."
+    echo "❌ Não foi possível identificar os remotes do Bitbucket e GitHub. Certifique-se de que estão configurados corretamente."
     exit 1
 fi
 
@@ -26,20 +27,20 @@ CURRENT_BRANCH=$(git symbolic-ref --short HEAD)
 
 # Verificar se a branch principal do GitHub (main) está sendo empurrada para o Bitbucket
 if [[ "$CURRENT_BRANCH" == "main" ]]; then
-  echo "Erro: Você não pode empurrar a branch 'main' para o Bitbucket!"
+  echo "❌  Você não pode empurrar a branch 'main' para o Bitbucket!"
   exit 1
 fi
 
 # Verificar se a branch principal do Bitbucket (master) está sendo empurrada para o GitHub
 if [[ "$CURRENT_BRANCH" == "master" ]]; then
-  echo "Erro: Você não pode empurrar a branch 'master' para o GitHub!"
+  echo "❌  Você não pode empurrar a branch 'master' para o GitHub!"
   exit 1
 fi
 
 
 # Verificar se a branch atual existe no Bitbucket
 echo ""
-echo "Verificando se a branch '$CURRENT_BRANCH' existe no '$REMOTE_BITBUCKET'..."
+echo "👁️  Verificando se a branch '$CURRENT_BRANCH' existe no '$REMOTE_BITBUCKET'..."
 BRANCH_EXISTS=$(git ls-remote --heads $REMOTE_BITBUCKET $CURRENT_BRANCH)
 
 if [[ -z "$BRANCH_EXISTS" ]]; then
@@ -50,7 +51,7 @@ else
 fi
 
 echo ""
-echo "Verificando se a branch '$CURRENT_BRANCH' está atualizada no Bitbucket..."
+echo "👁️  Verificando se a branch '$CURRENT_BRANCH' está atualizada no Bitbucket..."
 LOCAL_COMMIT=$(git rev-parse $CURRENT_BRANCH)
 REMOTE_COMMIT=$(git rev-parse $REMOTE_BITBUCKET/$CURRENT_BRANCH)
 
@@ -64,7 +65,7 @@ fi
 
 # Verificar se a branch atual existe no Github
 echo ""
-echo "Verificando se a branch '$CURRENT_BRANCH' existe no '$REMOTE_GITHUB'..."
+echo "👁️  Verificando se a branch '$CURRENT_BRANCH' existe no '$REMOTE_GITHUB'..."
 BRANCH_EXISTS=$(git ls-remote --heads $REMOTE_GITHUB $CURRENT_BRANCH)
 
 if [[ -z "$BRANCH_EXISTS" ]]; then
@@ -75,7 +76,7 @@ else
 fi
 
 echo ""
-echo "Verificando se a branch '$CURRENT_BRANCH' está atualizada no GitHub..."
+echo "👁️   Verificando se a branch '$CURRENT_BRANCH' está atualizada no GitHub..."
 LOCAL_COMMIT=$(git rev-parse $CURRENT_BRANCH)
 REMOTE_COMMIT=$(git rev-parse $REMOTE_GITHUB/$CURRENT_BRANCH)
 
@@ -85,7 +86,6 @@ else
   echo " ❌ A branch '$CURRENT_BRANCH' não está atualizada no GitHub. Empurrando..."
   git push $REMOTE_GITHUB
 fi
-
 
 
 # Obtém as URLs dos remotes
