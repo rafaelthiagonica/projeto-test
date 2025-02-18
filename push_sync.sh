@@ -43,12 +43,23 @@ echo "Verificando se a branch '$CURRENT_BRANCH' existe no '$REMOTE_BITBUCKET'...
 BRANCH_EXISTS=$(git ls-remote --heads $REMOTE_BITBUCKET $CURRENT_BRANCH)
 
 if [[ -z "$BRANCH_EXISTS" ]]; then
-  echo "A branch '$CURRENT_BRANCH' NÃO existe no '$REMOTE_BITBUCKET'."
+  echo " ❌ A branch '$CURRENT_BRANCH' NÃO existe no '$REMOTE_BITBUCKET'."
+  git push $REMOTE_BITBUCKET
 else
-  echo "A branch '$CURRENT_BRANCH' já existe no '$REMOTE_BITBUCKET'."
+  echo " ✅ A branch '$CURRENT_BRANCH' já existe no '$REMOTE_BITBUCKET'."
 fi
-git push $REMOTE_BITBUCKET
 
+echo ""
+echo "Verificando se a branch '$CURRENT_BRANCH' está atualizada no Bitbucket..."
+LOCAL_COMMIT=$(git rev-parse $CURRENT_BRANCH)
+REMOTE_COMMIT=$(git rev-parse $REMOTE_BITBUCKET/$CURRENT_BRANCH)
+
+if [ "$LOCAL_COMMIT" = "$REMOTE_COMMIT" ]; then
+  echo " ✅ A branch '$CURRENT_BRANCH' já está atualizada no Bitbucket."
+else
+  echo " ❌ A branch '$CURRENT_BRANCH' não está atualizada no Bitbucket. Empurrando..."
+  git push $REMOTE_BITBUCKET
+fi
 
 
 # Verificar se a branch atual existe no Github
@@ -57,24 +68,23 @@ echo "Verificando se a branch '$CURRENT_BRANCH' existe no '$REMOTE_GITHUB'..."
 BRANCH_EXISTS=$(git ls-remote --heads $REMOTE_GITHUB $CURRENT_BRANCH)
 
 if [[ -z "$BRANCH_EXISTS" ]]; then
-  echo "A branch '$CURRENT_BRANCH' NÃO existe no '$REMOTE_GITHUB'."
+  echo " ❌ A branch '$CURRENT_BRANCH' NÃO existe no '$REMOTE_GITHUB'."
+  git push $REMOTE_GITHUB
 else
-  echo "A branch '$CURRENT_BRANCH' já existe no '$REMOTE_GITHUB'."
+  echo " ✅ A branch '$CURRENT_BRANCH' já existe no '$REMOTE_GITHUB'."
 fi
-# git push $REMOTE_GITHUB
 
-
+echo ""
 echo "Verificando se a branch '$CURRENT_BRANCH' está atualizada no GitHub..."
 LOCAL_COMMIT=$(git rev-parse $CURRENT_BRANCH)
 REMOTE_COMMIT=$(git rev-parse $REMOTE_GITHUB/$CURRENT_BRANCH)
 
 if [ "$LOCAL_COMMIT" = "$REMOTE_COMMIT" ]; then
-  echo "A branch '$CURRENT_BRANCH' já está atualizada no GitHub."
+  echo " ✅ A branch '$CURRENT_BRANCH' já está atualizada no GitHub."
 else
-  echo "A branch '$CURRENT_BRANCH' não está atualizada no GitHub. Empurrando..."
+  echo " ❌ A branch '$CURRENT_BRANCH' não está atualizada no GitHub. Empurrando..."
   git push $REMOTE_GITHUB
 fi
-
 
 
 
@@ -82,13 +92,10 @@ fi
 BITBUCKET_URL=$(git remote get-url bitbucket | sed 's/\.git$//')
 GITLAB_URL=$(git remote get-url github | sed 's/\.git$//')
 
-
-# Exibe os links
-echo -e "\033[97mAbra os Pull Requests nos links abaixo:\033[0m"
-echo -e "\033[33mGitHub:\033[97m $BITBUCKET_URL/compare/main...$CURRENT_BRANCH\033[0m"
-echo -e "\033[33mGitLab:\033[97m $BITBUCKET_URL/-/merge_requests/new?merge_request[source_branch]=$CURRENT_BRANCH&merge_request[target_branch]=main\033[0m"
-
-# Exibe os links
-echo -e "\033[97mAbra os Pull Requests nos links abaixo:\033[0m"
-echo -e "\033[33mGitHub:\033[97m $GITHUB_URL/compare/main...$CURRENT_BRANCH\033[0m"
-echo -e "\033[33mGitLab:\033[97m $GITLAB_URL/-/merge_requests/new?merge_request[source_branch]=$CURRENT_BRANCH&merge_request[target_branch]=main\033[0m"
+# Gerar links de PR
+BITBUCKET_PR_URL="$BITBUCKET_URL/branches/compare/$CURRENT_BRANCH%0Dmaster"
+GITHUB_PR_URL="$GITLAB_URL/compare/$CURRENT_BRANCH?expand=1"
+echo ""
+echo "Abra os seguintes links para criar Pull Requests:"
+echo " 🔗 Bitbucket: $BITBUCKET_PR_URL"
+echo " 🔗 GitHub: $GITHUB_PR_URL"
