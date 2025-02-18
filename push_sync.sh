@@ -48,21 +48,19 @@ if [[ -z "$BRANCH_EXISTS" ]]; then
   echo "📨 Enviando"
   git push $REMOTE_BITBUCKET
 else
-  echo " ✅ A branch '$CURRENT_BRANCH' já existe no '$REMOTE_BITBUCKET'."
+  LOCAL_COMMIT=$(git rev-parse $CURRENT_BRANCH)
+  REMOTE_COMMIT=$(git rev-parse $REMOTE_BITBUCKET/$CURRENT_BRANCH)
+
+  if [ "$LOCAL_COMMIT" = "$REMOTE_COMMIT" ]; then
+    echo " ✅ A branch '$CURRENT_BRANCH' Existe e está atualizada no Bitbucket."
+  else
+    echo " ❌ A branch '$CURRENT_BRANCH' não está atualizada no Bitbucket. Empurrando..."
+    echo "📨 Enviando"
+    git push $REMOTE_BITBUCKET
+  fi
 fi
 
-echo ""
-echo "👁️  Verificando se a branch '$CURRENT_BRANCH' está atualizada no Bitbucket..."
-LOCAL_COMMIT=$(git rev-parse $CURRENT_BRANCH)
-REMOTE_COMMIT=$(git rev-parse $REMOTE_BITBUCKET/$CURRENT_BRANCH)
 
-if [ "$LOCAL_COMMIT" = "$REMOTE_COMMIT" ]; then
-  echo " ✅ A branch '$CURRENT_BRANCH' já está atualizada no Bitbucket."
-else
-  echo " ❌ A branch '$CURRENT_BRANCH' não está atualizada no Bitbucket. Empurrando..."
-  echo "📨 Enviando"
-  git push $REMOTE_BITBUCKET
-fi
 
 
 # Verificar se a branch atual existe no Github
@@ -75,20 +73,15 @@ if [[ -z "$BRANCH_EXISTS" ]]; then
   echo "📨 Enviando"
   git push $REMOTE_GITHUB
 else
-  echo " ✅ A branch '$CURRENT_BRANCH' já existe no '$REMOTE_GITHUB'."
-fi
-
-echo ""
-echo "👁️   Verificando se a branch '$CURRENT_BRANCH' está atualizada no GitHub..."
-LOCAL_COMMIT=$(git rev-parse $CURRENT_BRANCH)
-REMOTE_COMMIT=$(git rev-parse $REMOTE_GITHUB/$CURRENT_BRANCH)
-
-if [ "$LOCAL_COMMIT" = "$REMOTE_COMMIT" ]; then
-  echo " ✅ A branch '$CURRENT_BRANCH' já está atualizada no GitHub."
-else
-  echo " ❌ A branch '$CURRENT_BRANCH' não está atualizada no GitHub. Empurrando..."
-  echo "📨 Enviando"
-  git push $REMOTE_GITHUB
+  LOCAL_COMMIT=$(git rev-parse $CURRENT_BRANCH)
+  REMOTE_COMMIT=$(git rev-parse $REMOTE_GITHUB/$CURRENT_BRANCH)
+  if [ "$LOCAL_COMMIT" = "$REMOTE_COMMIT" ]; then
+    echo " ✅ A branch '$CURRENT_BRANCH' Existe e está atualizada no GitHub."
+  else
+    echo " ❌ A branch '$CURRENT_BRANCH' não está atualizada no GitHub. Empurrando..."
+    echo "📨 Enviando"
+    git push $REMOTE_GITHUB
+  fi
 fi
 
 
